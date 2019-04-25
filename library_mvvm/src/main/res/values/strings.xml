@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">mvvmhabit</string>
+
+    <string name="error_activity_error_occurred_explanation" translatable="false">发生意外错误。\n抱歉，给您带来不便。</string>
+    <string name="error_activity_restart_app" translatable="false">重新启动</string>
+    <string name="error_activity_close_app" translatable="false">关闭程序</string>
+    <string name="error_activity_error_details" translatable="false">错误日志</string>
+    <string name="error_activity_error_details_title" translatable="false">错误详情</string>
+    <string name="error_activity_error_details_close" translatable="false">关闭</string>
+    <string name="error_activity_error_details_copy" translatable="false">复制日志</string>
+    <string name="error_activity_error_details_copied" translatable="false">复制日志</string>
+    <string name="error_activity_error_details_clipboard_label" translatable="false">错误信息</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+</resources>
