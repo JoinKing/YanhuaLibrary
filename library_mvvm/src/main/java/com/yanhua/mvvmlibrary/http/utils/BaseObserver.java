@@ -15,7 +15,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     @Override
     public void onNext(T t) {
         BaseResponse baseResponse = (BaseResponse) t;
-        if (baseResponse.getCode() == 100) {
+        if (baseResponse.getStatus() == 100) {
             onResult((T) baseResponse);
         }else {
             ToastUtils.showShort("错误信息："+baseResponse.getMessage()+ ",错误码："+baseResponse.getCode());
