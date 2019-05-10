@@ -7,6 +7,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yanhua.mvvmlibrary.bus.event.SingleLiveEvent;
 

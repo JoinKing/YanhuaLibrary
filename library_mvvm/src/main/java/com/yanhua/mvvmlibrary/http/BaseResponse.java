@@ -8,8 +8,17 @@ import java.io.Serializable;
  */
 public class BaseResponse<T> implements Serializable {
     private int code;
+    private int status;
     private String msg;
     private T data;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public int getCode() {
         return code;
