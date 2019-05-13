@@ -63,7 +63,11 @@ dependencies {
     //ARouter
     implementation rootProject.ext.dependencies["arouter-api"]
     annotationProcessor rootProject.ext.dependencies["arouter-compiler"]
-
+    //加密相关
+    api rootProject.ext.dependencies["bcprov-jdk15on"]
+    api rootProject.ext.dependencies["bcpkix-jdk15on"]
+    //JSON
+    api rootProject.ext.dependencies.fastjson
     //material-dialogs
     api(rootProject.ext.dependencies["material-dialogs-core"]) {
         exclude group: 'com.android.support'

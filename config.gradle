@@ -55,6 +55,13 @@ ext {
             //material-dialogs
             "material-dialogs-core"                : "com.afollestad.material-dialogs:core:0.9.4.5",
             "material-dialogs-commons"             : "com.afollestad.material-dialogs:commons:0.9.4.5",
+            //加密相关
+            "bcprov-jdk15on"             : "org.bouncycastle:bcprov-jdk15on:1.60",
+            "bcpkix-jdk15on"             : "org.bouncycastle:bcpkix-jdk15on:1.60",
+            //阿里巴巴json
+            "fastjson"             : "com.alibaba:fastjson:1.2.37",
+
+
 
 
     ]

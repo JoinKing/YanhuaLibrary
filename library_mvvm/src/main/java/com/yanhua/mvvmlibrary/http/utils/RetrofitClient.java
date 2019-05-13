@@ -3,12 +3,15 @@ package com.yanhua.mvvmlibrary.http.utils;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.yanhua.mvvmlibrary.http.cookie.CookieJarImpl;
 import com.yanhua.mvvmlibrary.http.cookie.store.PersistentCookieStore;
+import com.yanhua.mvvmlibrary.http.encode.ConverterFactory;
 import com.yanhua.mvvmlibrary.http.interceptor.BaseInterceptor;
 import com.yanhua.mvvmlibrary.http.interceptor.CacheInterceptor;
 import com.yanhua.mvvmlibrary.http.interceptor.logging.Level;
 import com.yanhua.mvvmlibrary.http.interceptor.logging.LoggingInterceptor;
+import com.yanhua.mvvmlibrary.ssm.GmUtil;
 import com.yanhua.mvvmlibrary.utils.KLog;
 import com.yanhua.mvvmlibrary.utils.Utils;
 
@@ -27,7 +30,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.internal.platform.Platform;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by king on 2018.12.21
@@ -45,12 +47,18 @@ public class RetrofitClient {
     private int DEFAULT_TIMEOUT = 10;
     //缓存时间
     private int CACHE_TIMEOUT = 10 * 1024 * 1024;
-    private long RETRY_COUNT = 3;//重连次数
-
-    public static String APP_ID = "xx"; //微信APP_ID
-    public static String APP_SERECET = "xx";//微信APP_SERECET
-    public static String APP_QQID = "xx";//QQ APP_ID
-    public static String APP_QQSERECET = "xx";//QQ APP_SERECET
+    //重连次数
+    private long RETRY_COUNT = 3;
+    //加密规则
+    public static String encryptionRule = GmUtil.SM4_CBC;
+    //微信APP_ID
+    public static String APP_ID = "xx";
+    //微信APP_SERECET
+    public static String APP_SERECET = "xx";
+    //QQ APP_ID
+    public static String APP_QQID = "xx";
+    //QQ APP_SERECET
+    public static String APP_QQSERECET = "xx";
     //headers
     private Map<String,String> headers = new HashMap<>();
 
@@ -62,7 +70,7 @@ public class RetrofitClient {
     private Cache cache = null;
     private File httpCacheDirectory;
 
-    private static  RetrofitClient client;
+    private static RetrofitClient client;
 
     public static RetrofitClient builder() {
         if (null==client){
@@ -73,6 +81,10 @@ public class RetrofitClient {
 
     public RetrofitClient setUrl(String url) {
         this.baseUrl = url;
+        return this;
+    }
+  public RetrofitClient setEncryptionRule(String encryptionRule) {
+        this.encryptionRule = encryptionRule;
         return this;
     }
 
@@ -180,7 +192,8 @@ public class RetrofitClient {
                 .build();
         retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
+//                .addConverterFactory(GsonConverterFactory.create()) //不需要加密放开此处
+                .addConverterFactory(ConverterFactory.create(new Gson()))//加密/解密 解析器
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(isOtherUrl?otherUrl:baseUrl)
                 .build();

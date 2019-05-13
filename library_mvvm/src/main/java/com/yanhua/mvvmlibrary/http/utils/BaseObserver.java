@@ -11,20 +11,17 @@ import com.yanhua.mvvmlibrary.utils.Utils;
 import io.reactivex.observers.DisposableObserver;
 
 public abstract class BaseObserver<T> extends DisposableObserver<T> {
-
     @Override
     public void onNext(T t) {
         BaseResponse baseResponse = (BaseResponse) t;
+
         if (baseResponse.getStatus() == 100) {
             onResult((T) baseResponse);
-        }else {
-            ToastUtils.showShort("错误信息："+baseResponse.getMessage()+ ",错误码："+baseResponse.getCode());
+        } else {
+            onError(new Throwable("错误信息：" + baseResponse.getMessage() + ",错误码：" + baseResponse.getCode()));
         }
 
     }
-
-
-
 
     @Override
     public void onError(Throwable e) {
@@ -62,4 +59,6 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
 
 
     public abstract void onResult(T t);
+
+//    public abstract void onDeCodeResult(T w);
 }
