@@ -40,13 +40,13 @@ public abstract class CharacterEncoder {
     protected abstract void encodeAtom(OutputStream var1, byte[] var2, int var3, int var4) throws IOException;
 
     protected int readFully(InputStream var1, byte[] var2) throws IOException {
-        for(int var3 = 0; var3 < var2.length; ++var3) {
+        for (int var3 = 0; var3 < var2.length; ++var3) {
             int var4 = var1.read();
             if (var4 == -1) {
                 return var3;
             }
 
-            var2[var3] = (byte)var4;
+            var2[var3] = (byte) var4;
         }
 
         return var2.length;
@@ -56,7 +56,7 @@ public abstract class CharacterEncoder {
         byte[] var5 = new byte[this.bytesPerLine()];
         this.encodeBufferPrefix(var2);
 
-        while(true) {
+        while (true) {
             int var4 = this.readFully(var1, var5);
             if (var4 == 0) {
                 break;
@@ -64,7 +64,7 @@ public abstract class CharacterEncoder {
 
             this.encodeLinePrefix(var2, var4);
 
-            for(int var3 = 0; var3 < var4; var3 += this.bytesPerAtom()) {
+            for (int var3 = 0; var3 < var4; var3 += this.bytesPerAtom()) {
                 if (var3 + this.bytesPerAtom() <= var4) {
                     this.encodeAtom(var2, var5, var3, this.bytesPerAtom());
                 } else {
@@ -84,7 +84,7 @@ public abstract class CharacterEncoder {
 
     public void encode(byte[] var1, OutputStream var2) throws IOException {
         ByteArrayInputStream var3 = new ByteArrayInputStream(var1);
-        this.encode((InputStream)var3, var2);
+        this.encode((InputStream) var3, var2);
     }
 
     public String encode(byte[] var1) {
@@ -93,7 +93,7 @@ public abstract class CharacterEncoder {
         String var4 = null;
 
         try {
-            this.encode((InputStream)var3, var2);
+            this.encode((InputStream) var3, var2);
             var4 = var2.toString("8859_1");
             return var4;
         } catch (Exception var6) {
@@ -142,7 +142,7 @@ public abstract class CharacterEncoder {
 
             this.encodeLinePrefix(var2, var4);
 
-            for(int var3 = 0; var3 < var4; var3 += this.bytesPerAtom()) {
+            for (int var3 = 0; var3 < var4; var3 += this.bytesPerAtom()) {
                 if (var3 + this.bytesPerAtom() <= var4) {
                     this.encodeAtom(var2, var5, var3, this.bytesPerAtom());
                 } else {
@@ -151,14 +151,14 @@ public abstract class CharacterEncoder {
             }
 
             this.encodeLineSuffix(var2);
-        } while(var4 >= this.bytesPerLine());
+        } while (var4 >= this.bytesPerLine());
 
         this.encodeBufferSuffix(var2);
     }
 
     public void encodeBuffer(byte[] var1, OutputStream var2) throws IOException {
         ByteArrayInputStream var3 = new ByteArrayInputStream(var1);
-        this.encodeBuffer((InputStream)var3, var2);
+        this.encodeBuffer((InputStream) var3, var2);
     }
 
     public String encodeBuffer(byte[] var1) {
@@ -166,7 +166,7 @@ public abstract class CharacterEncoder {
         ByteArrayInputStream var3 = new ByteArrayInputStream(var1);
 
         try {
-            this.encodeBuffer((InputStream)var3, var2);
+            this.encodeBuffer((InputStream) var3, var2);
         } catch (Exception var5) {
             throw new Error("CharacterEncoder.encodeBuffer internal error");
         }

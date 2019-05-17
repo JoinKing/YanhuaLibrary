@@ -60,5 +60,4 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
 
     public abstract void onResult(T t);
 
-//    public abstract void onDeCodeResult(T w);
 }

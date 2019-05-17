@@ -57,6 +57,8 @@ dependencies {
     api rootProject.ext.dependencies.gson
     //glide图片加载库
     api rootProject.ext.dependencies.glide
+    //multidex
+    api rootProject.ext.dependencies.multidex
     annotationProcessor rootProject.ext.dependencies["glide-compiler"]
     //Google LiveData和ViewModel组件
     api rootProject.ext.dependencies["lifecycle-extensions"]

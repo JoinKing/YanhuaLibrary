@@ -2,8 +2,10 @@ package com.yanhua.mvvmlibrary.base;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
 
 import com.yanhua.mvvmlibrary.utils.Utils;
 
@@ -14,6 +16,13 @@ import com.yanhua.mvvmlibrary.utils.Utils;
 
 public class BaseApplication extends Application {
     private static Application sInstance;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+
+        MultiDex.install(this);
+        super.attachBaseContext(base);
+    }
 
     @Override
     public void onCreate() {

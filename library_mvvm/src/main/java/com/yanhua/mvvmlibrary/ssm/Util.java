@@ -3,16 +3,14 @@ package com.yanhua.mvvmlibrary.ssm;
 
 import java.math.BigInteger;
 
-public class Util
-{
+public class Util {
     /**
      * 整形转换成网络传输的字节流（字节数组）型数据
      *
      * @param num 一个整型数据
      * @return 4个字节的自己数组
      */
-    public static byte[] intToBytes(int num)
-    {
+    public static byte[] intToBytes(int num) {
         byte[] bytes = new byte[4];
         bytes[0] = (byte) (0xff & (num >> 0));
         bytes[1] = (byte) (0xff & (num >> 8));
@@ -27,8 +25,7 @@ public class Util
      * @param bytes 4个字节的字节数组
      * @return 一个整型数据
      */
-    public static int byteToInt(byte[] bytes)
-    {
+    public static int byteToInt(byte[] bytes) {
         int num = 0;
         int temp;
         temp = (0x000000ff & (bytes[0])) << 0;
@@ -43,16 +40,14 @@ public class Util
     }
 
     /**
-     * 长整形转换成网络传输的字节流（字节数组）型数据
+     * 长整形
      *
      * @param num 一个长整型数据
      * @return 4个字节的自己数组
      */
-    public static byte[] longToBytes(long num)
-    {
+    public static byte[] longToBytes(long num) {
         byte[] bytes = new byte[8];
-        for (int i = 0; i < 8; i++)
-        {
+        for (int i = 0; i < 8; i++) {
             bytes[i] = (byte) (0xff & (num >> (i * 8)));
         }
 
@@ -65,28 +60,20 @@ public class Util
      * @param n
      * @return
      */
-    public static byte[] byteConvert32Bytes(BigInteger n)
-    {
-        byte tmpd[] = (byte[])null;
-        if(n == null)
-        {
+    public static byte[] byteConvert32Bytes(BigInteger n) {
+        byte tmpd[] = (byte[]) null;
+        if (n == null) {
             return null;
         }
 
-        if(n.toByteArray().length == 33)
-        {
+        if (n.toByteArray().length == 33) {
             tmpd = new byte[32];
             System.arraycopy(n.toByteArray(), 1, tmpd, 0, 32);
-        }
-        else if(n.toByteArray().length == 32)
-        {
+        } else if (n.toByteArray().length == 32) {
             tmpd = n.toByteArray();
-        }
-        else
-        {
+        } else {
             tmpd = new byte[32];
-            for(int i = 0; i < 32 - n.toByteArray().length; i++)
-            {
+            for (int i = 0; i < 32 - n.toByteArray().length; i++) {
                 tmpd[i] = 0;
             }
             System.arraycopy(n.toByteArray(), 0, tmpd, 32 - n.toByteArray().length, n.toByteArray().length);
@@ -100,10 +87,8 @@ public class Util
      * @param b
      * @return
      */
-    public static BigInteger byteConvertInteger(byte[] b)
-    {
-        if (b[0] < 0)
-        {
+    public static BigInteger byteConvertInteger(byte[] b) {
+        if (b[0] < 0) {
             byte[] temp = new byte[b.length + 1];
             temp[0] = 0;
             System.arraycopy(b, 0, temp, 1, b.length);
@@ -118,8 +103,7 @@ public class Util
      * @param bytes
      * @return
      */
-    public static String getHexString(byte[] bytes)
-    {
+    public static String getHexString(byte[] bytes) {
         return getHexString(bytes, true);
     }
 
@@ -130,11 +114,9 @@ public class Util
      * @param upperCase
      * @return
      */
-    public static String getHexString(byte[] bytes, boolean upperCase)
-    {
+    public static String getHexString(byte[] bytes, boolean upperCase) {
         String ret = "";
-        for (int i = 0; i < bytes.length; i++)
-        {
+        for (int i = 0; i < bytes.length; i++) {
             ret += Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1);
         }
         return upperCase ? ret.toUpperCase() : ret;
@@ -145,13 +127,10 @@ public class Util
      *
      * @param bytes
      */
-    public static void printHexString(byte[] bytes)
-    {
-        for (int i = 0; i < bytes.length; i++)
-        {
+    public static void printHexString(byte[] bytes) {
+        for (int i = 0; i < bytes.length; i++) {
             String hex = Integer.toHexString(bytes[i] & 0xFF);
-            if (hex.length() == 1)
-            {
+            if (hex.length() == 1) {
                 hex = '0' + hex;
             }
             System.out.print("0x" + hex.toUpperCase() + ",");
@@ -162,14 +141,11 @@ public class Util
     /**
      * Convert hex string to byte[]
      *
-     * @param hexString
-     *            the hex string
+     * @param hexString the hex string
      * @return byte[]
      */
-    public static byte[] hexStringToBytes(String hexString)
-    {
-        if (hexString == null || hexString.equals(""))
-        {
+    public static byte[] hexStringToBytes(String hexString) {
+        if (hexString == null || hexString.equals("")) {
             return null;
         }
 
@@ -177,8 +153,7 @@ public class Util
         int length = hexString.length() / 2;
         char[] hexChars = hexString.toCharArray();
         byte[] d = new byte[length];
-        for (int i = 0; i < length; i++)
-        {
+        for (int i = 0; i < length; i++) {
             int pos = i * 2;
             d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
         }
@@ -188,12 +163,10 @@ public class Util
     /**
      * Convert char to byte
      *
-     * @param c
-     *            char
+     * @param c char
      * @return byte
      */
-    public static byte charToByte(char c)
-    {
+    public static byte charToByte(char c) {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
@@ -328,8 +301,7 @@ public class Util
     /**
      * 数字字符串转ASCII码字符串
      *
-     * @param content
-     *            字符串
+     * @param content 字符串
      * @return ASCII字符串
      */
     public static String StringToAsciiString(String content) {
@@ -346,10 +318,8 @@ public class Util
     /**
      * 十六进制转字符串
      *
-     * @param hexString
-     *            十六进制字符串
-     * @param encodeType
-     *            编码类型4：Unicode，2：普通编码
+     * @param hexString  十六进制字符串
+     * @param encodeType 编码类型4：Unicode，2：普通编码
      * @return 字符串
      */
     public static String hexStringToString(String hexString, int encodeType) {
@@ -366,8 +336,7 @@ public class Util
     /**
      * 十六进制字符串装十进制
      *
-     * @param hex
-     *            十六进制字符串
+     * @param hex 十六进制字符串
      * @return 十进制数值
      */
     public static int hexStringToAlgorism(String hex) {
@@ -390,8 +359,7 @@ public class Util
     /**
      * 十六转二进制
      *
-     * @param hex
-     *            十六进制字符串
+     * @param hex 十六进制字符串
      * @return 二进制字符串
      */
     public static String hexStringToBinary(String hex) {
@@ -457,8 +425,7 @@ public class Util
     /**
      * ASCII码字符串转数字字符串
      *
-     * @param content
-     *            ASCII字符串
+     * @param content ASCII字符串
      * @return 字符串
      */
     public static String AsciiStringToString(String content) {
@@ -477,10 +444,8 @@ public class Util
     /**
      * 将十进制转换为指定长度的十六进制字符串
      *
-     * @param algorism
-     *            int 十进制数字
-     * @param maxLength
-     *            int 转换后的十六进制字符串长度
+     * @param algorism  int 十进制数字
+     * @param maxLength int 转换后的十六进制字符串长度
      * @return String 转换后的十六进制字符串
      */
     public static String algorismToHexString(int algorism, int maxLength) {
@@ -496,8 +461,7 @@ public class Util
     /**
      * 字节数组转为普通字符串（ASCII对应的字符）
      *
-     * @param bytearray
-     *            byte[]
+     * @param bytearray byte[]
      * @return String
      */
     public static String byteToString(byte[] bytearray) {
@@ -515,8 +479,7 @@ public class Util
     /**
      * 二进制字符串转十进制
      *
-     * @param binary
-     *            二进制字符串
+     * @param binary 二进制字符串
      * @return 十进制数值
      */
     public static int binaryToAlgorism(String binary) {
@@ -533,8 +496,7 @@ public class Util
     /**
      * 十进制转换为十六进制字符串
      *
-     * @param algorism
-     *            int 十进制的数字
+     * @param algorism int 十进制的数字
      * @return String 对应的十六进制字符串
      */
     public static String algorismToHEXString(int algorism) {
@@ -553,10 +515,8 @@ public class Util
     /**
      * HEX字符串前补0，主要用于长度位数不足。
      *
-     * @param str
-     *            String 需要补充长度的十六进制字符串
-     * @param maxLength
-     *            int 补充后十六进制字符串的长度
+     * @param str       String 需要补充长度的十六进制字符串
+     * @param maxLength int 补充后十六进制字符串的长度
      * @return 补充结果
      */
     static public String patchHexString(String str, int maxLength) {
@@ -571,12 +531,9 @@ public class Util
     /**
      * 将一个字符串转换为int
      *
-     * @param s
-     *            String 要转换的字符串
-     * @param defaultInt
-     *            int 如果出现异常,默认返回的数字
-     * @param radix
-     *            int 要转换的字符串是什么进制的,如16 8 10.
+     * @param s          String 要转换的字符串
+     * @param defaultInt int 如果出现异常,默认返回的数字
+     * @param radix      int 要转换的字符串是什么进制的,如16 8 10.
      * @return int 转换后的数字
      */
     public static int parseToInt(String s, int defaultInt, int radix) {
@@ -592,10 +549,8 @@ public class Util
     /**
      * 将一个十进制形式的数字字符串转换为int
      *
-     * @param s
-     *            String 要转换的字符串
-     * @param defaultInt
-     *            int 如果出现异常,默认返回的数字
+     * @param s          String 要转换的字符串
+     * @param defaultInt int 如果出现异常,默认返回的数字
      * @return int 转换后的数字
      */
     public static int parseToInt(String s, int defaultInt) {
@@ -631,8 +586,7 @@ public class Util
     /**
      * 字节数组转换为十六进制字符串
      *
-     * @param b
-     *            byte[] 需要转换的字节数组
+     * @param b byte[] 需要转换的字节数组
      * @return String 十六进制字符串
      */
     public static String byteToHex(byte b[]) {
