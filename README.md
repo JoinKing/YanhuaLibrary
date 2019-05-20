@@ -771,4 +771,60 @@ ImageUtils.compressWithRx(filePaths, new Subscriber() {
 ## 混淆
 例子程序中给出了最新的【MVVM混淆规则】，包含MVVM中依赖的所有第三方library，可以将规则直接拷贝到自己app的混淆规则中。在此基础上你只需要关注自己业务代码以及自己引入第三方的混淆，【MVVM混淆规则】请参考app目录下的[proguard-rules.pro](./app/proguard-rules.pro)文件。
 
+## 热更新支持
+    
+1.开启分包
+```java
+android{
+    defaultConfig {
+        //开启分包
+        multiDexEnabled true
+        multiDexKeepFile file('multidex-config.txt')
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+        preDexLibraries = false
+        additionalParameters = [//配置打包参数
+                                '--muti-dex',//多dex分包
+                                '--set-max-idx-number=50000',//每个包内方法上线
+                                '--main-dex-list=' + '/multidex-config.txt',//打包到主classes.dex
+                                '--minimal-main-dex',
 
+        ]
+    }
+}
+```
+2.初始化
+```java
+public class BaseApplication extends com.yanhua.mvvmlibrary.base.BaseApplication {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+
+        HotManager.loadDex(base);
+        super.attachBaseContext(base);
+
+
+    }
+}
+```
+3.手动修复，修复完成后重启app
+```java
+/**
+*  cardFileUrl 修复classes2的文件路劲
+*  context 上下文
+*/
+public void fix(View view){
+        try {
+            HotFileLoader.copyFile(Environment.getExternalStorageDirectory()+"",this);
+            //开始热修复
+            HotManager.loadDex(this);
+            HotKillApp.killAllOtherProcess(this);
+            android.os.Process.killProcess(android.os.Process.myPid());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+```
