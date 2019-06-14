@@ -13,6 +13,8 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
 import com.yanhua.mvvmlibrary.utils.MaterialDialogUtils;
@@ -51,6 +53,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         viewModel.registerRxBus();
         //沉浸式
         initUltimateBar();
+
+        PushAgent.getInstance(this).onAppStart();
     }
 
     protected int COLOR_BLACK = 0X001;//状态栏字体为黑色
@@ -286,5 +290,18 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
      */
     public <T extends ViewModel> T createViewModel(FragmentActivity activity, Class<T> cls) {
         return ViewModelProviders.of(activity).get(cls);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }
