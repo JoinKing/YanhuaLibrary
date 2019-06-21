@@ -25,6 +25,18 @@ public class ExceptionHandle {
     private static final int INTERNAL_SERVER_ERROR = 500;
     private static final int SERVICE_UNAVAILABLE = 503;
 
+    private static final int SUCCESS = 100;
+    private static final int SUCCESS_ADD = 101;
+    private static final int SUCCESS_DELETE = 102;
+    private static final int SUCCESS_UPDATE = 103;
+    private static final int SUCCESS_QUERY = 104;
+    private static final int FAILED = 200;
+    private static final int FAILED_ADD = 201;
+    private static final int FAILED_DELETE = 202;
+    private static final int FAILED_UPDATE = 203;
+    private static final int FAILED_QUERY = 204;
+
+
     public static ResponseThrowable handleException(Throwable e) {
         ResponseThrowable ex;
         if (e instanceof HttpException) {

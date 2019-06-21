@@ -18,13 +18,6 @@ public class BaseApplication extends Application {
     private static Application sInstance;
 
     @Override
-    protected void attachBaseContext(Context base) {
-
-        MultiDex.install(this);
-        super.attachBaseContext(base);
-    }
-
-    @Override
     public void onCreate() {
         super.onCreate();
         //微信

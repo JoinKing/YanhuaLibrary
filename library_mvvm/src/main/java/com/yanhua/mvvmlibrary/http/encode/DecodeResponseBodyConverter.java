@@ -31,11 +31,16 @@ public  class DecodeResponseBodyConverter<T> implements Converter<ResponseBody, 
         String ciphertext = new String(responseBody.bytes());
         try {
             JSONObject obj = new JSONObject(ciphertext);
-            String object= PublicGmResult.decryptData(obj.optString("data"));
-            JSONObject data = new JSONObject(object);
-            obj.put("data",data);
-            KLog.e(obj.toString());
-            return adapter.fromJson(obj.toString());
+            String dataString = obj.optString("data");
+            if (null!=dataString&&dataString.length()>0){
+                String object= PublicGmResult.decryptData(dataString);
+                JSONObject data = new JSONObject(object);
+                obj.put("data",data);
+                return adapter.fromJson(obj.toString());
+            }else {
+                return adapter.fromJson(obj.toString());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
