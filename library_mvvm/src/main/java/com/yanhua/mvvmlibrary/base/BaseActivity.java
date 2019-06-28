@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
+import com.yanhua.mvvmlibrary.R;
 import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
 import com.yanhua.mvvmlibrary.utils.MaterialDialogUtils;
@@ -52,7 +54,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         //注册RxBus
         viewModel.registerRxBus();
         //沉浸式
-        initUltimateBar();
+        initUltimateBar(false, getResources().getColor(R.color.colorBar),0);
 
         PushAgent.getInstance(this).onAppStart();
     }
@@ -60,13 +62,18 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected int COLOR_BLACK = 0X001;//状态栏字体为黑色
     protected int COLOR_WHITE = 0X002;//状态栏字体为白色
 
-    private void initUltimateBar() {
-        UltimateBar ultimateBar = new UltimateBar(this);
-        ultimateBar.setImmersionBar();
-        if (barColor()==COLOR_WHITE){
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);//设置状态栏字体颜色为浅色
+    protected void initUltimateBar(boolean b, @ColorInt int color, int alpha) {
+        if (b){
+            UltimateBar ultimateBar = new UltimateBar(this);
+            ultimateBar.setImmersionBar();
+            if (barColor()==COLOR_WHITE){
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);//设置状态栏字体颜色为浅色
+            }else {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//设置状态栏字体颜色为深色
+            }
         }else {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//设置状态栏字体颜色为深色
+            UltimateBar ultimateBar = new UltimateBar(this);
+            ultimateBar.setColorBar(color,alpha);
         }
     }
 
