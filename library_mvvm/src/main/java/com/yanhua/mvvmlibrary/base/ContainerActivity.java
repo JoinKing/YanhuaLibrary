@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.yanhua.mvvmlibrary.R;
+import com.yanhua.mvvmlibrary.utils.UltimateBar;
 
 import java.lang.ref.WeakReference;
 
@@ -30,6 +32,9 @@ public class ContainerActivity extends RxAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         super.onCreate(savedInstanceState);
+        UltimateBar ultimateBar = new UltimateBar(this);
+        ultimateBar.setColorBar(getResources().getColor(R.color.colorBar),0);
+
         mianLayout = new LinearLayout(this);
         mianLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         //generateViewId()生成不重复的id
