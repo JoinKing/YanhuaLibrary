@@ -32,7 +32,8 @@ public class PublicGmResult implements Serializable{
         String encryptData = GmUtil.encryptData(data, type);
         JsonObject object = new JsonObject();
         object.addProperty("data",encryptData);
-        return new PublicGmResult(ResultStatus.SUCCESS.getValue(), ResultStatus.SUCCESS.getReasonPhrase(), object);
+
+        return new PublicGmResult(ResultStatus.SUCCESS.getValue(), ResultStatus.SUCCESS.getReasonPhrase(), object.toString());
 
     }
 
