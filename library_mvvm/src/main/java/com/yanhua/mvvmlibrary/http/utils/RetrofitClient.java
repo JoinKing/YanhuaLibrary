@@ -51,6 +51,10 @@ public class RetrofitClient {
     private long RETRY_COUNT = 3;
     //加密规则
     public static String encryptionRule = GmUtil.SM4_CBC;
+
+    //加密类型 1全密 2data+密文
+    public static int enCodeType ;
+
     //微信APP_ID
     public static String APP_ID = "xx";
     //微信APP_SERECET
@@ -81,6 +85,10 @@ public class RetrofitClient {
 
     public RetrofitClient setUrl(String url) {
         this.baseUrl = url;
+        return this;
+    }
+    public RetrofitClient setEnCodeType(int enCodeType) {
+        this.enCodeType = enCodeType;
         return this;
     }
   public RetrofitClient setEncryptionRule(String encryptionRule) {
