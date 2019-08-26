@@ -36,9 +36,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected V binding;
     protected VM viewModel;
     protected int viewModelId;
-    private MaterialDialog dialog;
-    private LoadingDialog loadingDialog;
-
+    private LoadingDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,15 +186,19 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     public void showDialog(String title) {
-        if (loadingDialog!=null){
-            loadingDialog.setMessage(title);
-            loadingDialog.show();
+        if (dialog != null) {
+            dialog.setMessage(title);
+            dialog.show();
+        } else {
+            dialog = new LoadingDialog(this);
+            dialog.setMessage(title);
+            dialog.show();
         }
     }
 
     public void dismissDialog() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
         }
     }
 
