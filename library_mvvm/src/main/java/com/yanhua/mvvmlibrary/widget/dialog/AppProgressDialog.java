@@ -19,13 +19,10 @@ public class AppProgressDialog extends ProgressDialog {
 		super(activity, R.style.bottom_dialog);
 		message = "正在加载...";
 		this.activity = activity;
-
-
 	}
 
 	public void setMessage(String message) {
 		this.message = message;
-
 	}
 
 	@Override
@@ -34,7 +31,6 @@ public class AppProgressDialog extends ProgressDialog {
 		setContentView(R.layout.app_progress_dialog);
 		messageTextView =  findViewById(R.id.define_progress_msg);
 		messageTextView.setText(message);
-
 	}
 
 	@Override

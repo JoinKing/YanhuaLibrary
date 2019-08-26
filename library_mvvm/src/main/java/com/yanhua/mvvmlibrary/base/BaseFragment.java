@@ -18,6 +18,7 @@ import com.trello.rxlifecycle2.components.support.RxFragment;
 import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
 import com.yanhua.mvvmlibrary.utils.MaterialDialogUtils;
+import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -31,8 +32,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     protected V binding;
     protected VM viewModel;
     protected int viewModelId;
-    private MaterialDialog dialog;
-
+    private LoadingDialog dialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,10 +152,12 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
 
     public void showDialog(String title) {
         if (dialog != null) {
+            dialog.setMessage(title);
             dialog.show();
         } else {
-            MaterialDialog.Builder builder = MaterialDialogUtils.showIndeterminateProgressDialog(getActivity(), title, true);
-            dialog = builder.show();
+            dialog = new LoadingDialog(getActivity());
+            dialog.setMessage(title);
+            dialog.show();
         }
     }
 

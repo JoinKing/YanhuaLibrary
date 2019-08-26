@@ -19,8 +19,8 @@ import com.umeng.message.PushAgent;
 import com.yanhua.mvvmlibrary.R;
 import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
-import com.yanhua.mvvmlibrary.utils.MaterialDialogUtils;
 import com.yanhua.mvvmlibrary.utils.UltimateBar;
+import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -37,6 +37,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected VM viewModel;
     protected int viewModelId;
     private MaterialDialog dialog;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         viewModel.registerRxBus();
         //沉浸式
         initUltimateBar(false, getResources().getColor(R.color.colorBar),0);
-
         PushAgent.getInstance(this).onAppStart();
     }
 
@@ -94,6 +94,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         //解决华为手机输入事件引起得内存泄漏问题
         FixMemLeak.fixLeak(this);
     }
+
+
 
 
 
@@ -186,17 +188,15 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     public void showDialog(String title) {
-        if (dialog != null) {
-            dialog.show();
-        } else {
-            MaterialDialog.Builder builder = MaterialDialogUtils.showIndeterminateProgressDialog(this, title, true);
-            dialog = builder.show();
+        if (loadingDialog!=null){
+            loadingDialog.setMessage(title);
+            loadingDialog.show();
         }
     }
 
     public void dismissDialog() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
         }
     }
 
