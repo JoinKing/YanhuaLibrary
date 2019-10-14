@@ -61,7 +61,7 @@ ext {
             //阿里巴巴json
             "fastjson"             : "com.alibaba:fastjson:1.2.37",
             //multidex
-            "multidex"             : "com.android.support:multidex:1.0.3",
+//            "multidex"             : "com.android.support:multidex:1.0.3",
 
 
 

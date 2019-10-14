@@ -178,7 +178,8 @@ public class PublicGmResult implements Serializable{
         String[] decryptData = data.split(" ");
         if(decryptData.length == 0 || decryptData.length == 1 ||decryptData.length > 3){
             try {
-                throw new Exception("密文格式有问题");
+//                throw new Exception("密文格式有问题");
+                return data;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -232,7 +233,7 @@ public class PublicGmResult implements Serializable{
      *
      * @param data 解密
      * @return
-     * @throws Exception
+     * @throws
      */
     public static String  decryptData(String data){
         return decryCommon(data);
@@ -244,7 +245,7 @@ public class PublicGmResult implements Serializable{
      * @param clazz
      * @param <T>
      * @return
-     * @throws Exception
+     * @throws
      */
     public static <T> T  decryptData(String data,Class<T> clazz)throws Exception{
         T t = JsonUtil.parseObject(decryCommon(data), clazz);
@@ -282,31 +283,6 @@ public class PublicGmResult implements Serializable{
         new String();
         return  s;
     }
-
-    public static void main(String args[])throws Exception{
-
-        String str =
-        "[{'id':'1233','name':'asdasda'}]";
-        PublicGmResult ecb = PublicGmResult.buildQuerySucess(str, "CBC");
-        String ss = (String)ecb.getData();
-        System.out.println(ss);
-
-/*        //                                     uBb7PWLGXiDjzoU2qE9bHMdlIJm8hxydPSaToMWr3/gM2iVRFVxCA2frph5kPEuEITdPA9lxqC+he80upgjwhQ== 85yyle0m85yyle0m 88x5ethm88x5ethm
-                                            // uBb7PWLGXiDjzoU2qE9bHMdlIJm8hxydPSaToMWr3/gM2iVRFVxCA2frph5kPEuEITdPA9lxqC\ he80upgjwhQ== 85yyle0m85yyle0m 88x5ethm88x5ethm
-
-
-     *//**//*   String str  = "7542623750574c475869446a7a6f553271453962484d646c494a6d3868787964505361546f4d5772332f674d3269565246567843413266727068356b504575454954645041396c7871432b686538307570676a7768513d3d20383579796c65306d383579796c65306d20383878356574686d383878356574686d";
-        System.out.println(hexStringToString(str));
-        String s = PublicGmResult.decryptData(hexStringToString(str));
-        System.out.println(s);*//**//*
-
-        String string = hexStringToString("");
-        //  String s = PublicGmResult.decryptData("nY6ydgV9NKnqQrG1xI6U5QqOcXNPThiStw5pf66Tf5TN4gzU63c67yDu2pRVNuH0lWZ1/6MRP5j4HW475XRnazaYGj5y5VUvtQ6mOOrRqlPtrfVYh9y3ux6KpHR8Wsh8X2x5HEkXjiwXgZdQwQ7DSIXAU5pDbd+BA0XNLHOzmfHmx467aAgPvBbo4DZer+tyS1lfzeda3uvqNG/AvSlCpTpQ7vqvlstOxciQmfunQpFsuthlAOCzdcb9GtE2/GHnezKCSvibE7L85UuPOEiNoJnlM9GFN5ixVCwIrtemHjhoiEaivjiq2If329fjk3OJyTPCJKY07EvfgZoxv2gvVEfKCi1exmIuqI3uz5b8lX/5mgSdL7mzCslrsTTpIJVY8XzX++pKwDiK4gKztFpnr8kvo9X2067xnSE2V1FembiJE7V8Nui3pYtVjf90vGgMYnj8TO/z/9c812LzGkNrTfzxoPcNoFLKmeOM32SUTuZjBHdxPCb+jcu7ll4xeso4di5k46On0r6lR0JGlbnwRfBU9VTQvehzKXIyjwXUlHJAx2NFeQfXDCjVNU484+FL5FRU8BaeH1Runuyt62MwITBN241YVUiW5SdViBMcK/MTwX7FocHgvkB294IfjKmUd2Xnf8Uy0by7JRtT6WnQen+CFE/PnmtMz2UVglbAPCL63R2ftP8dbTpyPNlCaKjIL4psx2VXHBTe0+Z1+ULoj/MnhQm/4NBGp9cJXEJP0zoCnZ8ImtcIoDw0RA4KtJyebRwawEJSgVlmba1nL4luvClUpamRVsAyHrEPLp+aLHkBCREiTKjIqbbnSVGzKfRSXySx/EBcF7wHvDs71cpmAw== lsz9ldsqlsz9ldsq wgrfwwcxwgrfwwcx");
-        System.out.println(PublicGmResult.decryptData(string));*//*
-*/
-
-    }
-
 
 
 }
