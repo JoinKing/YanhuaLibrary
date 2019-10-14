@@ -178,10 +178,11 @@ public class PublicGmResult implements Serializable{
         String[] decryptData = data.split(" ");
         if(decryptData.length == 0 || decryptData.length == 1 ||decryptData.length > 3){
             try {
-//                throw new Exception("密文格式有问题");
-                return data;
+                throw new Exception("密文格式有问题");
+
             } catch (Exception e) {
                 e.printStackTrace();
+                return data;
             }
         }
         SM4Utils sm4 = new SM4Utils();
