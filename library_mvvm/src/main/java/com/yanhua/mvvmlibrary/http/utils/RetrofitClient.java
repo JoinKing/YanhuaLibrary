@@ -52,7 +52,7 @@ public class RetrofitClient {
     //加密规则
     public static String encryptionRule = GmUtil.SM4_CBC;
 
-    //加密类型 1全密 2data+密文
+    //加密类型 1加密 2不加密
     public static int enCodeType ;
 
     //微信APP_ID
