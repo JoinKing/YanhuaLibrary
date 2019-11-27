@@ -3,19 +3,26 @@ package com.yanhua.mvvmlibrary.base;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.nlscan.android.scan.ScanManager;
+import com.nlscan.android.scan.ScanSettings;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.umeng.commonsdk.debug.E;
 import com.yanhua.mvvmlibrary.R;
 import com.yanhua.mvvmlibrary.bus.Messenger;
+import com.yanhua.mvvmlibrary.bus.RxBus;
+import com.yanhua.mvvmlibrary.event.InfraredEvent;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
 import com.yanhua.mvvmlibrary.utils.UltimateBar;
 import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
@@ -23,6 +30,7 @@ import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
+
 
 
 /**
@@ -35,9 +43,14 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected VM viewModel;
     protected int viewModelId;
     private LoadingDialog dialog;
+    protected ScanManager mScanMgr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化红外
+        initInfrared();
+
         //页面接受的参数方法
         initParam();
         //私有的初始化Databinding和ViewModel方法
@@ -51,29 +64,47 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         //注册RxBus
         viewModel.registerRxBus();
         //沉浸式
-        initUltimateBar(false, getResources().getColor(R.color.colorBar),0);
+        initUltimateBar(false, getResources().getColor(R.color.colorBar), 0);
 //        PushAgent.getInstance(this).onAppStart();
+    }
+
+    public void initInfrared() {
+        mScanMgr = ScanManager.getInstance();
+        mScanMgr.setOutpuMode(ScanSettings.Global.VALUE_OUT_PUT_MODE_BROADCAST);
+
+    }
+
+    private void registerReceiver() {
+        IntentFilter intFilter = new IntentFilter(ScanManager.ACTION_SEND_SCAN_RESULT);
+        registerReceiver(mResultReceiver, intFilter);
+    }
+
+    private void unRegisterReceiver() {
+        try {
+            unregisterReceiver(mResultReceiver);
+        } catch (Exception e) {
+        }
     }
 
     protected int COLOR_BLACK = 0X001;//状态栏字体为黑色
     protected int COLOR_WHITE = 0X002;//状态栏字体为白色
 
     protected void initUltimateBar(boolean b, @ColorInt int color, int alpha) {
-        if (b){
+        if (b) {
             UltimateBar ultimateBar = new UltimateBar(this);
             ultimateBar.setImmersionBar();
-            if (barColor()==COLOR_WHITE){
+            if (barColor() == COLOR_WHITE) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);//设置状态栏字体颜色为浅色
-            }else {
+            } else {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//设置状态栏字体颜色为深色
             }
-        }else {
+        } else {
             UltimateBar ultimateBar = new UltimateBar(this);
-            ultimateBar.setColorBar(color,alpha);
+            ultimateBar.setColorBar(color, alpha);
         }
     }
 
-    protected int barColor(){
+    protected int barColor() {
         return COLOR_BLACK;
     }
 
@@ -90,9 +121,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         //解决华为手机输入事件引起得内存泄漏问题
         FixMemLeak.fixLeak(this);
     }
-
-
-
 
 
     /**
@@ -303,12 +331,48 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onResume() {
         super.onResume();
-//        MobclickAgent.onResume(this);
+        unRegisterReceiver();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        registerReceiver();
 //        MobclickAgent.onPause(this);
     }
+
+    /**
+     * 监听扫码数据的广播，当设置广播输出时作用该方法获取扫码数据
+     */
+    private BroadcastReceiver mResultReceiver=new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action=intent.getAction();
+            if(ScanManager.ACTION_SEND_SCAN_RESULT.equals(action)){
+                byte[] bvalue1=intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_ONE_BYTES);
+                byte[] bvalue2=intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_TWO_BYTES);
+                String svalue1=null;
+                String svalue2=null;
+                try {
+                    if(bvalue1!=null)
+                        svalue1=new String(bvalue1,"GBK");
+                    if(bvalue2!=null)
+                        svalue2=new String(bvalue1,"GBK");
+                    svalue1=svalue1==null?"":svalue1;
+                    svalue2=svalue2==null?"":svalue2;
+                    InfraredEvent event = new InfraredEvent(1,svalue1+"\n"+svalue2);
+                    RxBus.getDefault().post(event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    InfraredEvent event = new InfraredEvent(-1,"扫描失败");
+                    RxBus.getDefault().post(event);
+                }
+            }
+        }
+    };
+
+
+
 }

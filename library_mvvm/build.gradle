@@ -57,7 +57,7 @@ dependencies {
     //glide图片加载库
     api rootProject.ext.dependencies.glide
     //multidex
-//    api rootProject.ext.dependencies.multidex
+    //    api rootProject.ext.dependencies.multidex
     annotationProcessor rootProject.ext.dependencies["glide-compiler"]
     //Google LiveData和ViewModel组件
     api rootProject.ext.dependencies["lifecycle-extensions"]
@@ -85,4 +85,5 @@ dependencies {
     //PushSDK
     implementation 'com.umeng.umsdk:push:5.0.2'
     implementation 'com.umeng.umsdk:analytics:7.5.4'
+    api files('libs/nlscan_sdk_master.jar')
 }
