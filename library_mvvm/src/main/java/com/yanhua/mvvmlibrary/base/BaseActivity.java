@@ -362,13 +362,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                     svalue1 = svalue1 == null ? "" : svalue1;
                     svalue2 = svalue2 == null ? "" : svalue2;
                     InfraredEvent event = new InfraredEvent(1, svalue1 + "\n" + svalue2);
-
-                    ToastUtils.showShort(svalue1 + "\n" + svalue2);
                     RxBus.getDefault().post(event);
                 } catch (Exception e) {
                     e.printStackTrace();
                     InfraredEvent event = new InfraredEvent(-1, "扫描失败");
-                    ToastUtils.showShort("扫描失败");
                     RxBus.getDefault().post(event);
                 }
             }else {
