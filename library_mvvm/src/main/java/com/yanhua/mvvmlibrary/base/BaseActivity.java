@@ -15,6 +15,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.Toast;
+
 import com.nlscan.android.scan.ScanManager;
 import com.nlscan.android.scan.ScanSettings;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
@@ -24,13 +26,13 @@ import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.bus.RxBus;
 import com.yanhua.mvvmlibrary.event.InfraredEvent;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
+import com.yanhua.mvvmlibrary.utils.ToastUtils;
 import com.yanhua.mvvmlibrary.utils.UltimateBar;
 import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
-
 
 
 /**
@@ -65,21 +67,19 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         viewModel.registerRxBus();
         //沉浸式
         initUltimateBar(false, getResources().getColor(R.color.colorBar), 0);
-//        PushAgent.getInstance(this).onAppStart();
     }
 
-    public void initInfrared() {
+    protected void initInfrared() {
         mScanMgr = ScanManager.getInstance();
         mScanMgr.setOutpuMode(ScanSettings.Global.VALUE_OUT_PUT_MODE_BROADCAST);
-
     }
 
-    private void registerReceiver() {
+    protected void registerReceiver() {
         IntentFilter intFilter = new IntentFilter(ScanManager.ACTION_SEND_SCAN_RESULT);
         registerReceiver(mResultReceiver, intFilter);
     }
 
-    private void unRegisterReceiver() {
+    protected void unRegisterReceiver() {
         try {
             unregisterReceiver(mResultReceiver);
         } catch (Exception e) {
@@ -331,48 +331,51 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onResume() {
         super.onResume();
-        unRegisterReceiver();
+        registerReceiver();
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        registerReceiver();
-//        MobclickAgent.onPause(this);
+        unRegisterReceiver();
     }
 
     /**
      * 监听扫码数据的广播，当设置广播输出时作用该方法获取扫码数据
      */
-    private BroadcastReceiver mResultReceiver=new BroadcastReceiver() {
+    protected BroadcastReceiver mResultReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action=intent.getAction();
-            if(ScanManager.ACTION_SEND_SCAN_RESULT.equals(action)){
-                byte[] bvalue1=intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_ONE_BYTES);
-                byte[] bvalue2=intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_TWO_BYTES);
-                String svalue1=null;
-                String svalue2=null;
+            String action = intent.getAction();
+            if (ScanManager.ACTION_SEND_SCAN_RESULT.equals(action)) {
+                byte[] bvalue1 = intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_ONE_BYTES);
+                byte[] bvalue2 = intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_TWO_BYTES);
+                String svalue1 = null;
+                String svalue2 = null;
                 try {
-                    if(bvalue1!=null)
-                        svalue1=new String(bvalue1,"GBK");
-                    if(bvalue2!=null)
-                        svalue2=new String(bvalue1,"GBK");
-                    svalue1=svalue1==null?"":svalue1;
-                    svalue2=svalue2==null?"":svalue2;
-                    InfraredEvent event = new InfraredEvent(1,svalue1+"\n"+svalue2);
+                    if (bvalue1 != null)
+                        svalue1 = new String(bvalue1, "GBK");
+                    if (bvalue2 != null)
+                        svalue2 = new String(bvalue1, "GBK");
+                    svalue1 = svalue1 == null ? "" : svalue1;
+                    svalue2 = svalue2 == null ? "" : svalue2;
+                    InfraredEvent event = new InfraredEvent(1, svalue1 + "\n" + svalue2);
+
+                    ToastUtils.showShort(svalue1 + "\n" + svalue2);
                     RxBus.getDefault().post(event);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    InfraredEvent event = new InfraredEvent(-1,"扫描失败");
+                    InfraredEvent event = new InfraredEvent(-1, "扫描失败");
+                    ToastUtils.showShort("扫描失败");
                     RxBus.getDefault().post(event);
                 }
+            }else {
+                ToastUtils.showShort("扫描失败");
             }
         }
     };
-
 
 
 }
