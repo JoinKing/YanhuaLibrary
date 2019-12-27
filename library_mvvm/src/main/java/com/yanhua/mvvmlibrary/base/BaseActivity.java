@@ -71,7 +71,11 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     protected void initInfrared() {
         mScanMgr = ScanManager.getInstance();
-        mScanMgr.setOutpuMode(ScanSettings.Global.VALUE_OUT_PUT_MODE_BROADCAST);
+
+        if (mScanMgr != null) {
+            mScanMgr.setOutpuMode(ScanSettings.Global.VALUE_OUT_PUT_MODE_BROADCAST);
+        }
+
     }
 
     protected void registerReceiver() {
@@ -368,7 +372,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                     InfraredEvent event = new InfraredEvent(-1, "扫描失败");
                     RxBus.getDefault().post(event);
                 }
-            }else {
+            } else {
                 ToastUtils.showShort("扫描失败");
             }
         }

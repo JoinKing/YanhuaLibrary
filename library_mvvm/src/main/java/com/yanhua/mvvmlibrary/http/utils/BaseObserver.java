@@ -30,10 +30,10 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         BaseResponse baseResponse = (BaseResponse) t;
         int status = baseResponse.getStatus();
 
-        if (status == SUCCESS||status==SUCCESS_ADD||status==SUCCESS_DELETE||status ==SUCCESS_UPDATE||status==SUCCESS_QUERY) {
+        if (status == SUCCESS||status==SUCCESS_ADD||status==SUCCESS_DELETE||status ==SUCCESS_UPDATE||status==SUCCESS_QUERY||status==FAILED||status==FAILED_ADD||status==FAILED_DELETE||status==FAILED_UPDATE||status==FAILED_QUERY) {
             onResult((T) baseResponse);
         } else {
-            onError(new ResponseThrowable(new Throwable(baseResponse.getMessage()), ExceptionHandle.ERROR.UNKNOWN));
+            onError(new ResponseThrowable(new Throwable(baseResponse.getMessage()), status));
         }
 
     }
@@ -43,7 +43,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         if (e instanceof ResponseThrowable) {
             onError((ResponseThrowable) e);
         } else {
-            onError(new ResponseThrowable(e, ExceptionHandle.ERROR.UNKNOWN));
+            onError(e);
         }
     }
 
@@ -53,7 +53,6 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
     @Override
     public void onStart() {
         super.onStart();
-        // if  NetworkAvailable no !   must to call onCompleted
         if (!NetworkUtil.isNetworkAvailable(Utils.getContext())) {
             ToastUtils.showShort("无网络，读取缓存数据");
             onComplete();
