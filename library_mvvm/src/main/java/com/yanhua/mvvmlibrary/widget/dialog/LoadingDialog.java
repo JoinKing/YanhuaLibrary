@@ -27,7 +27,7 @@ public class LoadingDialog extends Dialog {
     private String message = "";
 
     public LoadingDialog(@NonNull Context context) {
-        super(context, R.style.bottom_dialog);
+        super(context, R.style.style_loading);
         this.context = context;
     }
 
