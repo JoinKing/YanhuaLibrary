@@ -51,7 +51,24 @@ public class LoadingDialog extends Dialog {
         imLoad.setImageResource(drawables);
         tvTitle.setText(message.isEmpty() ? "" : message);
         drawable = AnimationUtils.loadAnimation(context, R.anim.dialog_loading);
-        imLoad.startAnimation(drawable);
+
+
+    }
+
+    public void showAnimation(){
+        if (null!=imLoad){
+            imLoad.startAnimation(drawable);
+        }
+        this.show();
+
+    }
+
+    public void dissAnimation(){
+        if (null!=imLoad){
+            imLoad.clearAnimation();
+        }
+
+        this.dismiss();
 
     }
 }

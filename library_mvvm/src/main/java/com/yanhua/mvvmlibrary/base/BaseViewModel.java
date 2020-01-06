@@ -47,7 +47,7 @@ public class BaseViewModel extends AndroidViewModel implements IBaseViewModel {
     }
 
     public void showDialog() {
-        showDialog("请稍后...");
+        showDialog("加载中...");
     }
 
     public void showDialog(String title) {

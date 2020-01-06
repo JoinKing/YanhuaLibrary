@@ -155,17 +155,17 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         if (dialog != null) {
             dialog.setMessage(title);
             dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-            dialog.show();
+            dialog.showAnimation();
         } else {
             dialog = new LoadingDialog(getActivity());
             dialog.setMessage(title);
             dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-            dialog.show();
+            dialog.showAnimation();
         }
     }
     public void dismissDialog() {
         if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
+            dialog.dissAnimation();
         }
     }
 
