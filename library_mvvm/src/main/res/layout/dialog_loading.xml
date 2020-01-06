@@ -9,7 +9,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/imLoad"
-        android:src="@drawable/publicloading"
+        android:src="@drawable/loading"
         android:layout_width="@dimen/dp_30"
         android:layout_height="@dimen/dp_30" />
 

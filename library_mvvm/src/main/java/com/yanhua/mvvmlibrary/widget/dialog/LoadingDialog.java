@@ -35,6 +35,12 @@ public class LoadingDialog extends Dialog {
         this.message = message;
     }
 
+    private int drawables;
+
+    public void setDrawable(int drawable) {
+        drawables = drawable;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +48,10 @@ public class LoadingDialog extends Dialog {
         setCancelable(false);
         imLoad = findViewById(R.id.imLoad);
         tvTitle = findViewById(R.id.tvTitle);
-        drawable = AnimationUtils.loadAnimation(context,R.anim.dialog_loading);
+        imLoad.setImageResource(drawables);
+        tvTitle.setText(message.isEmpty() ? "" : message);
+        drawable = AnimationUtils.loadAnimation(context, R.anim.dialog_loading);
         imLoad.startAnimation(drawable);
-        if (!message.isEmpty()){
-            tvTitle.setText(message);
-        }
+
     }
-
-
 }

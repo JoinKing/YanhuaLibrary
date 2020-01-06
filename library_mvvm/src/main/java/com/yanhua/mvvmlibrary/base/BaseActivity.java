@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.nlscan.android.scan.ScanManager;
 import com.nlscan.android.scan.ScanSettings;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
@@ -26,6 +27,7 @@ import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.bus.RxBus;
 import com.yanhua.mvvmlibrary.event.InfraredEvent;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
+import com.yanhua.mvvmlibrary.utils.LoadingDialogUtils;
 import com.yanhua.mvvmlibrary.utils.ToastUtils;
 import com.yanhua.mvvmlibrary.utils.UltimateBar;
 import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
@@ -66,7 +68,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         //注册RxBus
         viewModel.registerRxBus();
         //沉浸式
-        initUltimateBar(false, getResources().getColor(R.color.colorBar), 0);
+        initUltimateBar(false, R.color.colorBar, 0);
     }
 
     protected void initInfrared() {
@@ -93,7 +95,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected int COLOR_BLACK = 0X001;//状态栏字体为黑色
     protected int COLOR_WHITE = 0X002;//状态栏字体为白色
 
-    protected void initUltimateBar(boolean b, @ColorInt int color, int alpha) {
+    protected void initUltimateBar(boolean b,int color, int alpha) {
         if (b) {
             UltimateBar ultimateBar = new UltimateBar(this);
             ultimateBar.setImmersionBar();
@@ -103,8 +105,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//设置状态栏字体颜色为深色
             }
         } else {
-            UltimateBar ultimateBar = new UltimateBar(this);
-            ultimateBar.setColorBar(color, alpha);
+            ImmersionBar.with(this)
+                    .barColor(color,alpha)
+                    .init();
         }
     }
 
@@ -218,10 +221,12 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public void showDialog(String title) {
         if (dialog != null) {
             dialog.setMessage(title);
+            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
             dialog.show();
         } else {
             dialog = new LoadingDialog(this);
             dialog.setMessage(title);
+            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
             dialog.show();
         }
     }

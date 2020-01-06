@@ -54,6 +54,8 @@ dependencies {
     api rootProject.ext.dependencies["adapter-rxjava"]
     //json解析
     api rootProject.ext.dependencies.gson
+    //沉浸式
+    api rootProject.ext.dependencies.barlibrary
     //glide图片加载库
     api rootProject.ext.dependencies.glide
     //multidex

@@ -62,6 +62,8 @@ ext {
             "fastjson"             : "com.alibaba:fastjson:1.2.37",
             //multidex
             "multidex"             : "com.android.support:multidex:1.0.3",
+            // 沉浸式
+            "barlibrary"              : 'com.gyf.barlibrary:barlibrary:2.3.0'
 
 
 
