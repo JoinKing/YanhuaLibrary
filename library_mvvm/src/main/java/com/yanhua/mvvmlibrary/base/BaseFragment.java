@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
+import com.yanhua.mvvmlibrary.utils.LoadingDialogUtils;
 import com.yanhua.mvvmlibrary.utils.MaterialDialogUtils;
 import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
 
@@ -153,14 +154,15 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     public void showDialog(String title) {
         if (dialog != null) {
             dialog.setMessage(title);
+            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
             dialog.show();
         } else {
             dialog = new LoadingDialog(getActivity());
             dialog.setMessage(title);
+            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
             dialog.show();
         }
     }
-
     public void dismissDialog() {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
