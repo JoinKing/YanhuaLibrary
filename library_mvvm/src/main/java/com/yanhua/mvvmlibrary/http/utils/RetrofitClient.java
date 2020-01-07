@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 import okhttp3.ConnectionPool;
@@ -251,7 +252,7 @@ public class RetrofitClient {
      *  Observable<BaseResponse<StrBean>> observable =  RetrofitClient.builder().create(ApiService.class).getText();
      *  RetrofitClient.builder().toSubscribe(observable, observer);
      */
-    public <T> void toSubscribe(Observable<T> observable, BaseObserver<T> subscriber) {
+    public <T> void toSubscribe(Observable<T> observable, DisposableObserver<T> subscriber) {
         observable.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
