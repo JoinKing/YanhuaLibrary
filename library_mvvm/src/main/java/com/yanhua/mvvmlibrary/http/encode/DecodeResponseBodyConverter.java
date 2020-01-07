@@ -22,11 +22,6 @@ public  class DecodeResponseBodyConverter<T> implements Converter<ResponseBody, 
         this.adapter = adapter;
     }
 
-    public DecodeResponseBodyConverter(Gson gson, TypeAdapter<T> adapter) {
-        this.gson = gson;
-        this.adapter = adapter;
-    }
-
     @Override
     public T convert(ResponseBody responseBody) throws IOException {
         if (RetrofitClient.enCodeType == 1) {

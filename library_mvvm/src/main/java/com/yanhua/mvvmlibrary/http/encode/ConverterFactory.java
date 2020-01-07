@@ -14,6 +14,7 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 public class ConverterFactory extends Converter.Factory {
+
     public static ConverterFactory create() {
         return create(new Gson());
     }
@@ -21,7 +22,6 @@ public class ConverterFactory extends Converter.Factory {
     public static ConverterFactory create(Gson gson) {
         return new ConverterFactory(gson);
     }
-
     private final Gson gson;
 
     private ConverterFactory(Gson gson) {

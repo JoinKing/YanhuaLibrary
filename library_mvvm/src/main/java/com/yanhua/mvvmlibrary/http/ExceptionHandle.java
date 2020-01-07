@@ -42,9 +42,10 @@ public class ExceptionHandle {
         if (e instanceof HttpException) {
             HttpException httpException = (HttpException) e;
             ex = new ResponseThrowable(e, ERROR.HTTP_ERROR);
+            ex.code = httpException.code();
             switch (httpException.code()) {
                 case UNAUTHORIZED:
-                    ex.message = "操作未授权";
+                    ex.message = e.getMessage();
                     break;
                 case FORBIDDEN:
                     ex.message = "请求被拒绝";
