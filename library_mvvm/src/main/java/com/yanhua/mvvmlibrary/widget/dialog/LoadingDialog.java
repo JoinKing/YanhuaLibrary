@@ -58,6 +58,9 @@ public class LoadingDialog extends Dialog {
     public void showAnimation(){
         if (null!=imLoad){
             imLoad.startAnimation(drawable);
+        }else {
+            imLoad = findViewById(R.id.imLoad);
+            imLoad.startAnimation(drawable);
         }
         this.show();
 
@@ -66,8 +69,10 @@ public class LoadingDialog extends Dialog {
     public void dissAnimation(){
         if (null!=imLoad){
             imLoad.clearAnimation();
+        }else {
+            imLoad = findViewById(R.id.imLoad);
+            imLoad.clearAnimation();
         }
-
         this.dismiss();
 
     }
