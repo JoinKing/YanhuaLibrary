@@ -1,5 +1,6 @@
 package com.yanhua.mvvmlibrary.base;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
@@ -21,6 +22,7 @@ import com.yanhua.mvvmlibrary.utils.LoadingDialogUtils;
 import com.yanhua.mvvmlibrary.utils.MaterialDialogUtils;
 import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -33,7 +35,8 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     protected V binding;
     protected VM viewModel;
     protected int viewModelId;
-    private LoadingDialog dialog;
+    protected LoadingDialog dialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +54,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         viewModel = null;
         binding.unbind();
         //解决华为手机输入事件引起得内存泄漏问题
-        FixMemLeak.fixLeak(getActivity());
+//        FixMemLeak.fixLeak(new SoftReference<Activity>(getActivity()));
     }
 
     @Nullable
@@ -152,21 +155,24 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     public void showDialog(String title) {
-        if (dialog != null) {
-            dialog.setMessage(title);
-            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-            dialog.showAnimation();
-        } else {
+        if (dialog == null) {
             dialog = new LoadingDialog(getActivity());
-            dialog.setMessage(title);
-            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-            dialog.showAnimation();
         }
+        dialog.setMessage(title);
+        dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
+        dialog.showAnimation();
     }
+
     public void dismissDialog() {
         if (dialog != null && dialog.isShowing()) {
             dialog.dissAnimation();
         }
+    }
+
+    @Override
+    public void onPause() {
+        dismissDialog();
+        super.onPause();
     }
 
     /**

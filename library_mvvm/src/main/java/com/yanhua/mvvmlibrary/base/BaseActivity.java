@@ -1,5 +1,6 @@
 package com.yanhua.mvvmlibrary.base;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
@@ -15,6 +16,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
@@ -28,10 +30,12 @@ import com.yanhua.mvvmlibrary.bus.RxBus;
 import com.yanhua.mvvmlibrary.event.InfraredEvent;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
 import com.yanhua.mvvmlibrary.utils.LoadingDialogUtils;
+import com.yanhua.mvvmlibrary.utils.ScanUtils;
 import com.yanhua.mvvmlibrary.utils.ToastUtils;
 import com.yanhua.mvvmlibrary.utils.UltimateBar;
 import com.yanhua.mvvmlibrary.widget.dialog.LoadingDialog;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -40,13 +44,12 @@ import java.util.Map;
 /**
  * Created by king on 2018.12.21
  * 一个拥有DataBinding框架的基Activity
- * 这里根据项目业务可以换成你自己熟悉的BaseActivity, 但是需要继承RxAppCompatActivity,方便LifecycleProvider管理生命周期
  */
 public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseViewModel> extends RxAppCompatActivity implements IBaseActivity {
     protected V binding;
     protected VM viewModel;
     protected int viewModelId;
-    private LoadingDialog dialog;
+    protected LoadingDialog dialog;
     protected ScanManager mScanMgr;
 
     @Override
@@ -54,7 +57,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         super.onCreate(savedInstanceState);
         //初始化红外
         initInfrared();
-
         //页面接受的参数方法
         initParam();
         //私有的初始化Databinding和ViewModel方法
@@ -68,7 +70,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         //注册RxBus
         viewModel.registerRxBus();
         //沉浸式
-        initUltimateBar(false, R.color.colorBar, 0);
+        initUltimateBar(false, R.color.colorBar, 0, new SoftReference<Activity>(this));
     }
 
     protected void initInfrared() {
@@ -82,6 +84,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     protected void registerReceiver() {
         IntentFilter intFilter = new IntentFilter(ScanManager.ACTION_SEND_SCAN_RESULT);
+        intFilter.addAction(ScanUtils.ACTION_SEND_ZPD);
+        intFilter.addAction(ScanUtils.ACTION_SEND_P25);
         registerReceiver(mResultReceiver, intFilter);
     }
 
@@ -95,9 +99,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected int COLOR_BLACK = 0X001;//状态栏字体为黑色
     protected int COLOR_WHITE = 0X002;//状态栏字体为白色
 
-    protected void initUltimateBar(boolean b,int color, int alpha) {
+    protected void initUltimateBar(boolean b, int color, int alpha, SoftReference<Activity> contextSoftReference) {
         if (b) {
-            UltimateBar ultimateBar = new UltimateBar(this);
+            UltimateBar ultimateBar = new UltimateBar(contextSoftReference.get());
             ultimateBar.setImmersionBar();
             if (barColor() == COLOR_WHITE) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);//设置状态栏字体颜色为浅色
@@ -106,7 +110,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
         } else {
             ImmersionBar.with(this)
-                    .barColor(color,alpha)
+                    .barColor(color, alpha)
                     .init();
         }
     }
@@ -126,7 +130,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         viewModel = null;
         binding.unbind();
         //解决华为手机输入事件引起得内存泄漏问题
-        FixMemLeak.fixLeak(this);
+        FixMemLeak.fixLeak(new SoftReference<Activity>(this));
     }
 
 
@@ -219,16 +223,23 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     public void showDialog(String title) {
-        if (dialog != null) {
-            dialog.setMessage(title);
-            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-            dialog.showAnimation();
-        } else {
+//        if (dialog != null) {
+//            dialog.setMessage(title);
+//            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
+//            dialog.showAnimation();
+//        } else {
+//            dialog = new LoadingDialog(this);
+//            dialog.setMessage(title);
+//            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
+//            dialog.showAnimation();
+//        }
+
+        if (dialog == null) {
             dialog = new LoadingDialog(this);
-            dialog.setMessage(title);
-            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-            dialog.showAnimation();
         }
+        dialog.setMessage(title);
+        dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
+        dialog.showAnimation();
     }
 
     public void dismissDialog() {
@@ -348,6 +359,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public void onPause() {
         super.onPause();
         unRegisterReceiver();
+        dismissDialog();
     }
 
     /**
@@ -358,28 +370,46 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (ScanManager.ACTION_SEND_SCAN_RESULT.equals(action)) {
-                byte[] bvalue1 = intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_ONE_BYTES);
-                byte[] bvalue2 = intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_TWO_BYTES);
-                String svalue1 = null;
-                String svalue2 = null;
-                try {
-                    if (bvalue1 != null)
-                        svalue1 = new String(bvalue1, "GBK");
-                    if (bvalue2 != null)
-                        svalue2 = new String(bvalue1, "GBK");
-                    svalue1 = svalue1 == null ? "" : svalue1;
-                    svalue2 = svalue2 == null ? "" : svalue2;
-                    InfraredEvent event = new InfraredEvent(1, svalue1 + "\n" + svalue2);
+
+            switch (action) {
+                case ScanManager.ACTION_SEND_SCAN_RESULT:
+                    byte[] bvalue1 = intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_ONE_BYTES);
+                    byte[] bvalue2 = intent.getByteArrayExtra(ScanManager.EXTRA_SCAN_RESULT_TWO_BYTES);
+                    String svalue1 = null;
+                    String svalue2 = null;
+                    try {
+                        if (bvalue1 != null)
+                            svalue1 = new String(bvalue1, "GBK");
+                        if (bvalue2 != null)
+                            svalue2 = new String(bvalue1, "GBK");
+                        svalue1 = svalue1 == null ? "" : svalue1;
+                        svalue2 = svalue2 == null ? "" : svalue2;
+                        InfraredEvent event = new InfraredEvent(1, svalue1 + "\n" + svalue2);
+                        RxBus.getDefault().post(event);
+                    } catch (Exception e) {
+                        InfraredEvent event = new InfraredEvent(-1, "扫描失败");
+                        RxBus.getDefault().post(event);
+                        e.printStackTrace();
+                    }
+                    break;
+                case ScanUtils.ACTION_SEND_ZPD:
+                    String scanResult = intent.getStringExtra("data");
+                    InfraredEvent event = new InfraredEvent(1, scanResult);
                     RxBus.getDefault().post(event);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    InfraredEvent event = new InfraredEvent(-1, "扫描失败");
-                    RxBus.getDefault().post(event);
-                }
-            } else {
-                ToastUtils.showShort("扫描失败");
+                    break;
+
+                case ScanUtils.ACTION_SEND_P25:
+                    String P25_RESULT = intent.getStringExtra("BARCODE");
+                    if (!P25_RESULT.isEmpty()) {
+                        InfraredEvent eventP25 = new InfraredEvent(1, P25_RESULT);
+                        RxBus.getDefault().post(eventP25);
+                    }
+                    break;
+                default:
+                    ToastUtils.showShort("扫描失败");
+                    break;
             }
+
         }
     };
 

@@ -1,8 +1,10 @@
 package com.yanhua.mvvmlibrary.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 
 /**
@@ -15,11 +17,11 @@ public class FixMemLeak {
     private static Field field;
     private static boolean hasField = true;
 
-    public static void fixLeak(Context context) {
+    public static void fixLeak(SoftReference<Activity> context) {
         if (!hasField) {
             return;
         }
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) context.get().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm == null) {
             return;
         }

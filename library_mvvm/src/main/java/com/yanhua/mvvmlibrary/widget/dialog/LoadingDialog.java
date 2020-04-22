@@ -29,6 +29,7 @@ public class LoadingDialog extends Dialog {
     public LoadingDialog(@NonNull Context context) {
         super(context, R.style.style_loading);
         this.context = context;
+
     }
 
     public void setMessage(String message) {
@@ -46,34 +47,35 @@ public class LoadingDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_loading);
         setCancelable(false);
-        imLoad = findViewById(R.id.imLoad);
-        tvTitle = findViewById(R.id.tvTitle);
-        imLoad.setImageResource(drawables);
-        tvTitle.setText(message.isEmpty() ? "" : message);
-        drawable = AnimationUtils.loadAnimation(context, R.anim.dialog_loading);
-
-
+        initView();
     }
 
     public void showAnimation(){
+        show();
+    }
+
+    @Override
+    public void show() {
         if (null!=imLoad){
             imLoad.startAnimation(drawable);
-        }else {
-            imLoad = findViewById(R.id.imLoad);
-            imLoad.startAnimation(drawable);
         }
-        this.show();
-
+        super.show();
     }
 
     public void dissAnimation(){
         if (null!=imLoad){
             imLoad.clearAnimation();
-        }else {
-            imLoad = findViewById(R.id.imLoad);
-            imLoad.clearAnimation();
         }
         this.dismiss();
 
+    }
+
+    public void initView(){
+        imLoad = findViewById(R.id.imLoad);
+        tvTitle = findViewById(R.id.tvTitle);
+        imLoad.setImageResource(drawables);
+        tvTitle.setText(message.isEmpty() ? "" : message);
+        drawable = AnimationUtils.loadAnimation(context, R.anim.dialog_loading);
+        imLoad.startAnimation(drawable);
     }
 }
