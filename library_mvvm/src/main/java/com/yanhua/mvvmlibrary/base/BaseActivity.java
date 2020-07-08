@@ -12,6 +12,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -23,6 +24,7 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.nlscan.android.scan.ScanManager;
 import com.nlscan.android.scan.ScanSettings;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.debug.E;
 import com.yanhua.mvvmlibrary.R;
 import com.yanhua.mvvmlibrary.bus.Messenger;
@@ -86,6 +88,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         IntentFilter intFilter = new IntentFilter(ScanManager.ACTION_SEND_SCAN_RESULT);
         intFilter.addAction(ScanUtils.ACTION_SEND_ZPD);
         intFilter.addAction(ScanUtils.ACTION_SEND_P25);
+        intFilter.addAction(ScanUtils.ACTION_SEND_HONEYWELL);
         registerReceiver(mResultReceiver, intFilter);
     }
 
@@ -131,6 +134,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         binding.unbind();
         //解决华为手机输入事件引起得内存泄漏问题
         FixMemLeak.fixLeak(new SoftReference<Activity>(this));
+
+
     }
 
 
@@ -155,6 +160,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         }
         //关联ViewModel
         binding.setVariable(viewModelId, viewModel);
+        //支持LiveData绑定xml，数据改变，UI自动会更新
+        binding.setLifecycleOwner(this);
         //让ViewModel拥有View的生命周期感应
         getLifecycle().addObserver(viewModel);
         //注入RxLifecycle生命周期
@@ -223,17 +230,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     public void showDialog(String title) {
-//        if (dialog != null) {
-//            dialog.setMessage(title);
-//            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-//            dialog.showAnimation();
-//        } else {
-//            dialog = new LoadingDialog(this);
-//            dialog.setMessage(title);
-//            dialog.setDrawable(LoadingDialogUtils.getInstance().getImage());
-//            dialog.showAnimation();
-//        }
-
         if (dialog == null) {
             dialog = new LoadingDialog(this);
         }
@@ -352,6 +348,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public void onResume() {
         super.onResume();
         registerReceiver();
+        MobclickAgent.onResume(this);
 
     }
 
@@ -359,6 +356,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public void onPause() {
         super.onPause();
         unRegisterReceiver();
+        MobclickAgent.onPause(this);
         dismissDialog();
     }
 
@@ -405,8 +403,19 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                         RxBus.getDefault().post(eventP25);
                     }
                     break;
+
+                case ScanUtils.ACTION_SEND_HONEYWELL:
+                    String result = intent.getStringExtra("data");
+                    if (null!=result&&!result.isEmpty()) {
+                        InfraredEvent eventHoneywell = new InfraredEvent(1, result);
+                        RxBus.getDefault().post(eventHoneywell);
+                    }else {
+                        InfraredEvent eventHoneywellFail = new InfraredEvent(-1, "扫描失败");
+                        RxBus.getDefault().post(eventHoneywellFail);
+                    }
+                    break;
                 default:
-                    ToastUtils.showShort("扫描失败");
+                    ToastUtils.showShort(R.string.scan_faile);
                     break;
             }
 

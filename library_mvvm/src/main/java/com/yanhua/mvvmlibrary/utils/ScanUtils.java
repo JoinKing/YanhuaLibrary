@@ -9,4 +9,5 @@ package com.yanhua.mvvmlibrary.utils;
 public class ScanUtils {
     public static final String ACTION_SEND_ZPD = "com.android.action.BARCODE";//中普达
     public static final String ACTION_SEND_P25 = "com.barcode.sendBroadcast";//P25
+    public static final String ACTION_SEND_HONEYWELL = "com.honeywell.tools.action.scan_result";//honeywell
 }

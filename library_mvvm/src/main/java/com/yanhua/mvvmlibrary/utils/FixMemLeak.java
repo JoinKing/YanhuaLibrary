@@ -27,6 +27,7 @@ public class FixMemLeak {
         }
 
         String[] arr = new String[]{"mLastSrvView"};
+
         for (String param : arr) {
             try {
                 if (field == null) {

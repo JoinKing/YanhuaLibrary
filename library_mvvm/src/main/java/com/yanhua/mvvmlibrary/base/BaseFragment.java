@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.trello.rxlifecycle2.components.support.RxFragment;
+import com.umeng.analytics.MobclickAgent;
 import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.utils.FixMemLeak;
 import com.yanhua.mvvmlibrary.utils.LoadingDialogUtils;
@@ -170,9 +171,16 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(getContext());
+    }
+
+    @Override
     public void onPause() {
-        dismissDialog();
         super.onPause();
+        dismissDialog();
+        MobclickAgent.onPause(getContext());
     }
 
     /**
