@@ -75,7 +75,7 @@ public class ExceptionHandle {
             return ex;
         } else if (e instanceof ConnectException) {
             ex = new ResponseThrowable(e, ERROR.NETWORD_ERROR);
-            ex.message = "连接失败";
+            ex.message = "网络连接失败";
             return ex;
         } else if (e instanceof javax.net.ssl.SSLException) {
             ex = new ResponseThrowable(e, ERROR.SSL_ERROR);

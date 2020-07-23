@@ -64,7 +64,7 @@ public class DownLoadManager {
     private void buildNetWork() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new ProgressInterceptor())
-                .connectTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(2000, TimeUnit.SECONDS)
                 .build();
 
         retrofit = new Retrofit.Builder()

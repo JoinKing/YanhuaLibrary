@@ -2,6 +2,7 @@ package com.yanhua.mvvmlibrary.ssm;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.JsonObject;
+import com.yanhua.mvvmlibrary.utils.KLog;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,9 +30,12 @@ public class PublicGmResult implements Serializable{
 
 
     public static PublicGmResult success(Object data, String type) {
+
+        KLog.e(String.valueOf(data));
         String encryptData = GmUtil.encryptData(data, type);
         JsonObject object = new JsonObject();
         object.addProperty("data",encryptData);
+
 
         return new PublicGmResult(ResultStatus.SUCCESS.getValue(), ResultStatus.SUCCESS.getReasonPhrase(), object.toString());
 

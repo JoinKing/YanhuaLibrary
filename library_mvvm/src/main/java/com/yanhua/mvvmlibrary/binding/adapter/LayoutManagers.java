@@ -59,6 +59,20 @@ public class LayoutManagers {
     }
 
     /**
+     * A {@link GridLayoutManager} with the given spanCount.
+     */
+    public static LayoutManagerFactory grid(final int spanCount ,boolean scorll) {
+        return new LayoutManagerFactory() {
+            @Override
+            public RecyclerView.LayoutManager create(RecyclerView recyclerView) {
+                NoScrollGridLayoutManager manager = new NoScrollGridLayoutManager(recyclerView.getContext(), spanCount);
+                manager.setScrollEnabled(false);
+                return manager;
+            }
+        };
+    }
+
+    /**
      * A {@link GridLayoutManager} with the given spanCount, orientation and reverseLayout.
      **/
     public static LayoutManagerFactory grid(final int spanCount, @Orientation final int orientation, final boolean reverseLayout) {

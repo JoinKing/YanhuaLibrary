@@ -31,6 +31,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.internal.platform.Platform;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by king on 2018.12.21
@@ -42,6 +43,7 @@ public class RetrofitClient {
     public String baseUrl = "";
     //是否手动设置其他url
     private boolean isOtherUrl;
+    private boolean isOtherEnCode; //判断是否加密
     private boolean DEBUG;
     private String otherUrl;
     //超时时间
@@ -54,7 +56,8 @@ public class RetrofitClient {
     public static String encryptionRule = GmUtil.SM4_CBC;
 
     //加密类型 1加密 2不加密
-    public static int enCodeType ;
+    public static int enCodeType ;//参数
+    public static int enCodeTypeBody ;//结果
 
     //微信APP_ID
     public static String APP_ID = "xx";
@@ -82,6 +85,16 @@ public class RetrofitClient {
             client = new RetrofitClient();
         }
         return client;
+    }
+
+    public RetrofitClient setOtherEnCode(boolean otherEnCode) {
+        isOtherEnCode = otherEnCode;
+        return this;
+    }
+
+    public  RetrofitClient setEnCodeTypeBody(int enCodeTypeBody) {
+        this.enCodeTypeBody = enCodeTypeBody;
+        return this;
     }
 
     public RetrofitClient setUrl(String url) {
@@ -202,13 +215,12 @@ public class RetrofitClient {
         retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
 //                .addConverterFactory(GsonConverterFactory.create()) //不需要加密放开此处
-                .addConverterFactory(ConverterFactory.create(new Gson()))//加密/解密 解析器
+                .addConverterFactory(!isOtherEnCode?ConverterFactory.create(new Gson()):GsonConverterFactory.create())//加密/解密 解析器
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(isOtherUrl?otherUrl:baseUrl)
                 .build();
-
-
         //当请求结束后重置otherUrl
+        isOtherEnCode = false;
         isOtherUrl = false;
         otherUrl = null;
 

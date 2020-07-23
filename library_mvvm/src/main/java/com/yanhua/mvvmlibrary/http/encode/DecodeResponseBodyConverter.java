@@ -24,7 +24,7 @@ public  class DecodeResponseBodyConverter<T> implements Converter<ResponseBody, 
 
     @Override
     public T convert(ResponseBody responseBody) throws IOException {
-        if (RetrofitClient.enCodeType == 1) {
+        if (RetrofitClient.enCodeTypeBody == 1) {
             String ciphertext = new String(responseBody.bytes());
             try {
                 JSONObject obj = new JSONObject(ciphertext);
