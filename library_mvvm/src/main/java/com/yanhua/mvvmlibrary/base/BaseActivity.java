@@ -24,8 +24,6 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.nlscan.android.scan.ScanManager;
 import com.nlscan.android.scan.ScanSettings;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.commonsdk.debug.E;
 import com.yanhua.mvvmlibrary.R;
 import com.yanhua.mvvmlibrary.bus.Messenger;
 import com.yanhua.mvvmlibrary.bus.RxBus;
@@ -348,7 +346,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public void onResume() {
         super.onResume();
         registerReceiver();
-        MobclickAgent.onResume(this);
 
     }
 
@@ -356,7 +353,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public void onPause() {
         super.onPause();
         unRegisterReceiver();
-        MobclickAgent.onPause(this);
         dismissDialog();
     }
 

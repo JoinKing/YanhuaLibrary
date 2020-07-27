@@ -31,6 +31,7 @@ public class WebViewOption {
 
 
         WebSettings webSettings = webView.getSettings();
+        webSettings.setSupportMultipleWindows(true);
         webSettings.setJavaScriptEnabled(true);//支持js
         webSettings.setDomStorageEnabled(true);//支持js储存
 
